@@ -11,24 +11,32 @@ import { useEffect, useState } from 'react';
 
 function App() {
   const [starshipData,setstarshipData] = useState([]);
-
-
-  const loadStarship= async ()=>{
- const response=   await axios.get('https://swapi.dev/api/starships/')
-     
-  }
-  useEffect(()=>{
-    loadStarship();
-        fetch('https://swapi.dev/api/starships/')
-          .then(res => res.json())
-          .then(
-            (starships) => {
-              console.log()
-            }
-          )
-      },[]);
   
+  const loadStarship= async ()=>{
+      try {
+        const response = await axios.get('https://swapi.dev/api/starships/');
+        setStarshipData(response.data.results);
+        } catch (error) {
+        console.error('Error loading starships:', error);
+        }
+  };
+ useEffect(() => {
+    loadStarships();
+  }, []);
+
+  return (
+    <BrowserRouter>
+      <div className="App">
+        <Header />
+        <Routes>
+          <Route path="/" element={<HomePage starships={starshipData} />} />
+          <Route path="/card/:id" element={<CardPage starships={starshipData} />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
+  );
 }
+
   
     
       export default App;
